@@ -6,5 +6,5 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 
 class AddStoryViewModel (private val repository: UserRepository) : ViewModel() {
-    fun addStory(file : MultipartBody.Part, decryption:RequestBody) = repository.addStory(file, decryption)
+    fun addStory(file : MultipartBody.Part,decription:RequestBody) = repository.addStory(file, decription)
 }

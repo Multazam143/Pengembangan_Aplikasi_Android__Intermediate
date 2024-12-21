@@ -5,6 +5,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.dicoding.picodiploma.loginwithanimation.data.UserRepository
 import com.dicoding.picodiploma.loginwithanimation.response.ListStoryItem
 import kotlinx.coroutines.launch
@@ -19,6 +21,9 @@ class MainViewModel(private val repository: UserRepository) : ViewModel() {
 
     private val _isLoggedOut = MutableLiveData<Boolean>()
     val isLoggedOut: LiveData<Boolean> = _isLoggedOut
+
+    val stories: LiveData<PagingData<ListStoryItem>> =
+        repository.getStories().cachedIn(viewModelScope)
 
     init {
         viewModelScope.launch{
@@ -51,5 +56,3 @@ class MainViewModel(private val repository: UserRepository) : ViewModel() {
 
     }
 }
-
-

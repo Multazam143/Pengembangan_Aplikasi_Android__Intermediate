@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Warna untuk tema malam -->
+    <color name="background">#FFFFFF</color>
+    <color name="text">#000000</color>
+    <color name="button_background">#E0E0E0</color>
+    <color name="icon_background">#FFFFFF</color>
+
     <!-- Base application theme. -->
     <style name="Base.Theme.LoginWithAnimation" parent="Theme.Material3.DayNight.NoActionBar">
-        <resources>
-            <color name="background">#FFFFFF</color>
-            <color name="text">#000000</color>
-            <color name="button_background">#E0E0E0</color>
-            <color name="icon_background">#FFFFFF</color>
-        </resources>
+        <!-- Tambahkan properti tema malam jika diperlukan -->
     </style>
 </resources>

@@ -2,6 +2,11 @@ package com.dicoding.picodiploma.loginwithanimation.data
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.liveData
+import com.dicoding.picodiploma.loginwithanimation.api.ApiConfig.getApiService
 import com.dicoding.picodiploma.loginwithanimation.api.ApiService
 import com.dicoding.picodiploma.loginwithanimation.data.pref.UserModel
 import com.dicoding.picodiploma.loginwithanimation.data.pref.UserPreference
@@ -9,6 +14,7 @@ import com.dicoding.picodiploma.loginwithanimation.data.request.LoginRequest
 import com.dicoding.picodiploma.loginwithanimation.response.AddNewStoryResponse
 import com.dicoding.picodiploma.loginwithanimation.response.DetailStoryResponse
 import com.dicoding.picodiploma.loginwithanimation.response.ErrorResponse
+import com.dicoding.picodiploma.loginwithanimation.response.ListStoryItem
 import com.dicoding.picodiploma.loginwithanimation.response.StoryResponse
 import com.dicoding.picodiploma.loginwithanimation.utils.Result
 import com.google.gson.Gson
@@ -22,6 +28,8 @@ class UserRepository private constructor(
     private val apiService: ApiService,
     private val userPreference: UserPreference
 ) {
+
+
 
     suspend fun getStory(): StoryResponse{
         val token = userPreference.getSession().first().token
@@ -38,6 +46,15 @@ class UserRepository private constructor(
         }
     }
 
+    suspend fun getStoriesWithLocation(): List<ListStoryItem>{
+        val token = userPreference.getSession().first().token
+        val response =   apiService.getStoriesWithLocation(location = 1, token = "Bearer $token")
+        return response.listStory.filter { it.lat != null && it.lon != null }
+
+    }
+
+
+
     suspend fun register(name: String, email: String, password: String) = apiService.register(name, email, password)
 
     suspend fun login(loginRequest: LoginRequest)= apiService.logInUser(loginRequest.email,loginRequest.password)
@@ -49,6 +66,19 @@ class UserRepository private constructor(
     fun getSession(): Flow<UserModel> {
         return userPreference.getSession()
     }
+
+    fun getStories(): LiveData<PagingData<ListStoryItem>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = 5
+            ),
+            pagingSourceFactory = {
+                StoryPagingSource(apiService, userPreference)
+            }
+        ).liveData
+    }
+
+
 
     fun addStory(file: MultipartBody.Part, description: RequestBody): LiveData<Result<AddNewStoryResponse>> = liveData {
         emit(Result.Loading)
@@ -63,7 +93,6 @@ class UserRepository private constructor(
             emit(Result.Error(errorMessage.toString()))
         }
     }
-
 
     suspend fun logout() {
         userPreference.logout()

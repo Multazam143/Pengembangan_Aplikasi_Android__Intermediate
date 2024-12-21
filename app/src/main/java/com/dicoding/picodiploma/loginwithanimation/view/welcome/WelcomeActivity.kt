@@ -9,15 +9,9 @@ import android.view.View
 import android.view.WindowInsets
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.lifecycleScope
 import com.dicoding.picodiploma.loginwithanimation.databinding.ActivityWelcomeBinding
-import com.dicoding.picodiploma.loginwithanimation.data.pref.UserPreference
-import com.dicoding.picodiploma.loginwithanimation.data.pref.dataStore
-import com.dicoding.picodiploma.loginwithanimation.view.main.MainActivity
 import com.dicoding.picodiploma.loginwithanimation.view.login.LoginActivity
 import com.dicoding.picodiploma.loginwithanimation.view.signup.SignupActivity
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
 
 class WelcomeActivity : AppCompatActivity() {
     private lateinit var binding: ActivityWelcomeBinding
@@ -27,24 +21,9 @@ class WelcomeActivity : AppCompatActivity() {
         binding = ActivityWelcomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        checkIfLoggedIn() // Tambahkan pengecekan login
-
         setupView()
         setupAction()
         playAnimation()
-    }
-
-    private fun checkIfLoggedIn() {
-        lifecycleScope.launch {
-            val userPreference = UserPreference.getInstance(dataStore)
-            val user = userPreference.getSession().first()
-            if (user.isLogin) {
-                val intent = Intent(this@WelcomeActivity, MainActivity::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                startActivity(intent)
-                finish()
-            }
-        }
     }
 
     private fun setupView() {
