@@ -51,7 +51,8 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/titleTextView"
-        tools:alpha="100" />
+        tools:alpha="100"
+        tools:ignore="TextContrastCheck,VisualLintLongText" />
 
     <Button
         android:id="@+id/signupButton"
@@ -66,7 +67,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guidelineVertical"
         app:layout_constraintTop_toBottomOf="@+id/descTextView"
-        tools:alpha="100" />
+        tools:alpha="100"
+        tools:ignore="TextContrastCheck,VisualLintButtonSize" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guidelineHorizontal"

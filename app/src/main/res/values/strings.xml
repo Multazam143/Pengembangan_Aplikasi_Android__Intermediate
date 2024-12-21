@@ -21,4 +21,6 @@
     <string name="photo">photo</string>
     <string name="deskipsi">Deskipsi</string>
     <string name="sudah_siap_upload_story">Sudah Siap Upload Story?</string>
+    <string name="judul">Judul</string>
+    <string name="Add">Add</string>
 </resources>
