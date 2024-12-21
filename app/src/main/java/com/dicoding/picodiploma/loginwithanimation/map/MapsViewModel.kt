@@ -1,8 +1,9 @@
-package com.dicoding.picodiploma.loginwithanimation.maps
+package com.dicoding.picodiploma.loginwithanimation.map
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.dicoding.picodiploma.loginwithanimation.data.UserRepository
 import com.dicoding.picodiploma.loginwithanimation.response.ListStoryItem
@@ -24,5 +25,16 @@ class MapsViewModel(private val repository: UserRepository) : ViewModel() {
             }
         }
     }
-
 }
+
+class MapsViewModelFactory(private val repository: UserRepository) : ViewModelProvider.Factory {
+    @Suppress("UNCHECKED_CAST")
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(MapsViewModel::class.java)) {
+            return MapsViewModel(repository) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
+    }
+}
+
+

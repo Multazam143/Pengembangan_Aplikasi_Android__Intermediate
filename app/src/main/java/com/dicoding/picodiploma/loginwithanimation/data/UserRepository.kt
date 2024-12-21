@@ -6,7 +6,6 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.liveData
-import com.dicoding.picodiploma.loginwithanimation.api.ApiConfig.getApiService
 import com.dicoding.picodiploma.loginwithanimation.api.ApiService
 import com.dicoding.picodiploma.loginwithanimation.data.pref.UserModel
 import com.dicoding.picodiploma.loginwithanimation.data.pref.UserPreference
@@ -24,12 +23,10 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.HttpException
 
-class UserRepository private constructor(
+class UserRepository (
     private val apiService: ApiService,
     private val userPreference: UserPreference
 ) {
-
-
 
     suspend fun getStory(): StoryResponse{
         val token = userPreference.getSession().first().token

@@ -27,7 +27,7 @@
 
         <!-- MapsActivity -->
         <activity
-            android:name=".maps.MapsActivity"
+            android:name=".map.MapsActivity"
             android:exported="true"
             android:label="@string/title_activity_maps" >
         </activity>
