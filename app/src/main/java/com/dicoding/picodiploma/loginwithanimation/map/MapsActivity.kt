@@ -11,7 +11,6 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.viewModels
 import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AppCompatActivity
@@ -19,11 +18,9 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.DrawableCompat
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.dicoding.picodiploma.loginwithanimation.R
 import com.dicoding.picodiploma.loginwithanimation.api.ApiConfig
-import com.dicoding.picodiploma.loginwithanimation.api.ApiService
 import com.dicoding.picodiploma.loginwithanimation.data.UserRepository
 import com.dicoding.picodiploma.loginwithanimation.data.pref.UserPreference
 import com.dicoding.picodiploma.loginwithanimation.data.pref.dataStore
@@ -34,20 +31,18 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.dicoding.picodiploma.loginwithanimation.databinding.ActivityMapsBinding
-import com.dicoding.picodiploma.loginwithanimation.response.ListStoryItem
-import com.dicoding.picodiploma.loginwithanimation.view.ViewModelFactory
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MapStyleOptions
 
+@Suppress("SameParameterValue", "UNREACHABLE_CODE")
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
     private lateinit var binding: ActivityMapsBinding
     private val boundsBuilder = LatLngBounds.Builder()
     private lateinit var mapsViewModel : MapsViewModel
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,7 +55,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         val repository = UserRepository(apiService, userPreference)
 
         val factory = MapsViewModelFactory(repository)
-        mapsViewModel = ViewModelProvider(this, factory).get(MapsViewModel::class.java)
+        mapsViewModel = ViewModelProvider(this, factory)[MapsViewModel::class.java]
 
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
@@ -73,7 +68,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun observeViewModel() {
-        mapsViewModel.storiesWithLocation.observe(this, Observer { stories ->
+        mapsViewModel.storiesWithLocation.observe(this) { stories ->
             stories.forEach { story ->
                 val latLng = LatLng(story.lat as Double, story.lon as Double)
                 mMap.addMarker(
@@ -82,10 +77,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                         .title(story.name)
                         .snippet(story.description)
                 )
-                boundsBuilder.include(latLng) // Tambahkan ke boundsBuilder
+                boundsBuilder.include(latLng)
             }
 
-            // Zoom otomatis ke semua marker
             val bounds: LatLngBounds = boundsBuilder.build()
             mMap.animateCamera(
                 CameraUpdateFactory.newLatLngBounds(
@@ -95,18 +89,16 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                     300
                 )
             )
-        })
+        }
 
-        mapsViewModel.fetchStoriesWithLocation() // Panggil fetch data
+        mapsViewModel.fetchStoriesWithLocation()
     }
-
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.map_options, menu)
         return true
     }
 
-    //select menu
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.normal_type -> {
@@ -130,21 +122,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             }
         }
         return super.onOptionsItemSelected(item)
-    }
-
-
-    //marker
-    private fun addMarkersToMap(stories: List<ListStoryItem>) {
-        stories.forEach { story ->
-            val latLng = LatLng(story.lat as Double, story.lon as Double)
-            mMap.addMarker(
-                MarkerOptions()
-                    .position(latLng)
-                    .title(story.name)
-                    .snippet(story.description)
-                    .icon(vectorToBitmap(R.drawable.ic_android_24, Color.parseColor("#3DDC84")))
-            )
-        }
     }
 
     private fun addManyMarker() {
@@ -174,7 +151,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             )
         )
     }
-
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
@@ -226,8 +202,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         val longitude: Double
     )
 
-
-
     private fun vectorToBitmap(@DrawableRes id: Int, @ColorInt color: Int): BitmapDescriptor {
         val vectorDrawable = ResourcesCompat.getDrawable(resources, id, null)
         if (vectorDrawable == null) {
@@ -245,10 +219,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         vectorDrawable.draw(canvas)
         return BitmapDescriptorFactory.fromBitmap(bitmap)
     }
-
-
-
-
 
     private val requestPermissionLauncher =
         registerForActivityResult(

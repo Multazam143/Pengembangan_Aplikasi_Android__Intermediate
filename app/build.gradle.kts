@@ -12,7 +12,7 @@ android {
         applicationId = "com.dicoding.picodiploma.loginwithanimation"
         minSdk = 21
         //noinspection OldTargetApi
-        targetSdk = 33
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
@@ -37,6 +37,9 @@ android {
         //noinspection DataBindingWithoutKapt
         dataBinding = true
         buildConfig = true
+    }
+    testOptions {
+        unitTests.isReturnDefaultValues = true
     }
 }
 
@@ -66,4 +69,13 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.11.0")
 
+    implementation ("androidx.paging:paging-runtime-ktx:3.3.5")
+
+    // Unit Testing
+    testImplementation ("junit:junit:4.13.2")
+    testImplementation ("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
+    testImplementation ("androidx.arch.core:core-testing:2.2.0")
+    testImplementation ("io.mockk:mockk:1.13.5")
+    testImplementation ("org.mockito:mockito-inline:5.5.0")
+    testImplementation ("androidx.paging:paging-common-ktx:3.3.5")
 }

@@ -11,7 +11,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.dicoding.picodiploma.loginwithanimation.R
 import com.dicoding.picodiploma.loginwithanimation.StoryAdapter
 import com.dicoding.picodiploma.loginwithanimation.addstory.AddStoryActivity
@@ -23,7 +22,6 @@ import com.dicoding.picodiploma.loginwithanimation.map.MapsActivity
 import com.dicoding.picodiploma.loginwithanimation.view.ViewModelFactory
 import com.dicoding.picodiploma.loginwithanimation.view.login.LoginActivity
 import com.dicoding.picodiploma.loginwithanimation.view.welcome.WelcomeActivity
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
@@ -34,10 +32,8 @@ class MainActivity : AppCompatActivity() {
         ViewModelFactory.getInstance(this)
     }
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -47,24 +43,22 @@ class MainActivity : AppCompatActivity() {
 
         checkLoginSession()
 
-        val fab: FloatingActionButton = findViewById(R.id.add)
-        fab.setOnClickListener{
-            val intent = Intent (this, AddStoryActivity::class.java )
+        binding.add.setOnClickListener {
+            val intent = Intent(this, AddStoryActivity::class.java)
             startActivity(intent)
         }
 
-        mainViewModel.isLoggedOut.observe(this){ isLoggedOut ->
+        mainViewModel.isLoggedOut.observe(this) { isLoggedOut ->
             if (isLoggedOut) {
-                Toast.makeText(this, " Logout Successfully", Toast.LENGTH_SHORT).show()
-                val intent = Intent (this, WelcomeActivity::class.java)
+                Toast.makeText(this, "Logout Successfully", Toast.LENGTH_SHORT).show()
+                val intent = Intent(this, WelcomeActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 startActivity(intent)
                 finish()
             }
         }
 
-        getStories()
-
+        setupRecyclerView()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -74,7 +68,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId){
+        return when (item.itemId) {
             R.id.logout -> {
                 lifecycleScope.launch {
                     mainViewModel.logout()
@@ -86,48 +80,36 @@ class MainActivity : AppCompatActivity() {
                 startActivity(intent)
                 true
             }
-
-            else -> {
-                super.onOptionsItemSelected(item)
-            }
+            else -> super.onOptionsItemSelected(item)
         }
     }
 
-    private fun getStories(){
+    private fun setupRecyclerView() {
         val adapter = StoryAdapter()
+
+        // Pasangkan StoryAdapter dengan LoadingStateAdapter untuk menampilkan footer loading/error
+        binding.rvStories.layoutManager = LinearLayoutManager(this)
         binding.rvStories.adapter = adapter.withLoadStateFooter(
-            footer = LoadingStateAdapter {
-                adapter.retry()
-            }
+            footer = LoadingStateAdapter { adapter.retry() }
         )
+
+        // Submit paging data ke adapter
         mainViewModel.stories.observe(this) {
             adapter.submitData(lifecycle, it)
         }
     }
 
-    private fun checkLoginSession(){
+    private fun checkLoginSession() {
         lifecycleScope.launch {
             val user = userPreference.getSession().first()
             val isUserLoggedIn = user.isLogin
 
-            if (isUserLoggedIn){
-                setupUI()
-            } else{
+            if (isUserLoggedIn) {
+                setupRecyclerView()
+            } else {
                 startActivity(Intent(this@MainActivity, LoginActivity::class.java))
                 finish()
             }
-        }
-
-    }
-
-    private fun setupUI(){
-        val recyclerView = findViewById<RecyclerView>(R.id.rvStories)
-        recyclerView.layoutManager = LinearLayoutManager(this)
-        val adapter = StoryAdapter()
-        recyclerView.adapter = adapter
-
-        mainViewModel.stories.observe(this) { pagingData ->
-            adapter.submitData(lifecycle, pagingData)
         }
     }
 }

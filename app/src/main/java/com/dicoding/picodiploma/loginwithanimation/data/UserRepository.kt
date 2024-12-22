@@ -50,8 +50,6 @@ class UserRepository (
 
     }
 
-
-
     suspend fun register(name: String, email: String, password: String) = apiService.register(name, email, password)
 
     suspend fun login(loginRequest: LoginRequest)= apiService.logInUser(loginRequest.email,loginRequest.password)
@@ -74,8 +72,6 @@ class UserRepository (
             }
         ).liveData
     }
-
-
 
     fun addStory(file: MultipartBody.Part, description: RequestBody): LiveData<Result<AddNewStoryResponse>> = liveData {
         emit(Result.Loading)

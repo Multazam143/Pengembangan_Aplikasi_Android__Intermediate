@@ -18,12 +18,12 @@ class StoryPagingSource(private val apiService: ApiService,  private val userPre
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, ListStoryItem> {
         return try {
             val position = params.key ?: INITIAL_PAGE_INDEX
-            val token = "Bearer ${userPreference.getSession().first().token}" //Ganti dengan token yang sesuai
+            val token = "Bearer ${userPreference.getSession().first().token}"
 
             Log.d("StoryPagingSource", "Loading stories with token: $token")
 
             val response = apiService.getStories(token, position, params.loadSize)
-            val stories = response. listStory // List<ListStoryItem>
+            val stories = response. listStory
             LoadResult.Page(
                 data = stories,
                 prevKey = if (position == INITIAL_PAGE_INDEX) null else position - 1,
